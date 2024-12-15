@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
-import { HomeIcon, UserIcon, CodeBracketIcon, ChatBubbleBottomCenterTextIcon } from '@heroicons/react/24/outline'
+import { HomeIcon, UserIcon, DocumentTextIcon, ClipboardDocumentListIcon } from '@heroicons/react/24/outline'
+import { RequestForm } from './components/RequestForm'
+import { RequestsList } from './components/RequestsList'
 
 function App() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false)
 
   return (
     <Router>
@@ -17,17 +19,25 @@ function App() {
                 animate={{ opacity: 1 }}
                 className="flex items-center"
               >
-                <Link to="/" className="text-xl font-bold">DevPortfolio</Link>
+                <Link to="/" className="text-xl font-bold">Student Groups</Link>
               </motion.div>
               
               <div className="hidden md:block">
                 <div className="ml-10 flex items-baseline space-x-4">
-                  <NavLink to="/" icon={<HomeIcon className="h-5 w-5" />} text="Home" />
-                  <NavLink to="/about" icon={<UserIcon className="h-5 w-5" />} text="About" />
-                  <NavLink to="/projects" icon={<CodeBracketIcon className="h-5 w-5" />} text="Projects" />
-                  <NavLink to="/contact" icon={<ChatBubbleBottomCenterTextIcon className="h-5 w-5" />} text="Contact" />
+                  <NavLink to="/" icon={<HomeIcon className="h-5 w-5" />} text="მთავარი" />
+                  <NavLink to="/request" icon={<DocumentTextIcon className="h-5 w-5" />} text="მოთხოვნა" />
+                  {isAdmin && (
+                    <NavLink to="/admin" icon={<ClipboardDocumentListIcon className="h-5 w-5" />} text="მოთხოვნების სია" />
+                  )}
                 </div>
               </div>
+              
+              <button
+                onClick={() => setIsAdmin(!isAdmin)}
+                className="px-4 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-white hover:bg-gray-700 transition-all"
+              >
+                {isAdmin ? 'User Mode' : 'Admin Mode'}
+              </button>
             </div>
           </div>
         </nav>
@@ -35,9 +45,8 @@ function App() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/contact" element={<Contact />} />
+            <Route path="/request" element={<RequestForm />} />
+            {isAdmin && <Route path="/admin" element={<RequestsList />} />}
           </Routes>
         </main>
       </div>
@@ -64,103 +73,42 @@ function Home() {
       animate={{ opacity: 1, y: 0 }}
       className="text-center"
     >
-      <h1 className="text-4xl font-bold mb-6">Welcome to DevPortfolio</h1>
-      <p className="text-xl text-gray-300 mb-8">A modern portfolio template for developers</p>
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium"
-      >
-        Get Started
-      </motion.button>
-    </motion.div>
-  )
-}
-
-function About() {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="max-w-3xl mx-auto"
-    >
-      <h2 className="text-3xl font-bold mb-6">About Me</h2>
-      <p className="text-gray-300 mb-4">
-        I'm a passionate developer focused on creating beautiful and functional web applications.
+      <h1 className="text-4xl font-bold mb-6">მოგესალმებით Student Groups-ში</h1>
+      <p className="text-xl text-gray-300 mb-8">
+        ეს არის პლატფორმა, სადაც შეგიძლიათ შეუერთდეთ სასურველ სასწავლო ჯგუფს
       </p>
-    </motion.div>
-  )
-}
-
-function Projects() {
-  const projects = [
-    { title: "Project 1", description: "A cool project description" },
-    { title: "Project 2", description: "Another amazing project" },
-    { title: "Project 3", description: "Something awesome" },
-  ]
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-    >
-      <h2 className="text-3xl font-bold mb-6">My Projects</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {projects.map((project, index) => (
-          <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
-            className="bg-gray-800 p-6 rounded-lg"
-          >
-            <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-            <p className="text-gray-300">{project.description}</p>
-          </motion.div>
-        ))}
-      </div>
-    </motion.div>
-  )
-}
-
-function Contact() {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="max-w-3xl mx-auto"
-    >
-      <h2 className="text-3xl font-bold mb-6">Contact Me</h2>
-      <form className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-2">Name</label>
-          <input
-            type="text"
-            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-2">Email</label>
-          <input
-            type="email"
-            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-2">Message</label>
-          <textarea
-            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:border-blue-500"
-            rows="4"
-          ></textarea>
-        </div>
-        <motion.button
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <motion.div
           whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-full bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium"
+          className="bg-gray-800 p-6 rounded-lg"
         >
-          Send Message
-        </motion.button>
-      </form>
+          <h2 className="text-2xl font-bold mb-4">სტუდენტებისთვის</h2>
+          <p className="text-gray-300 mb-4">
+            გაგზავნეთ მოთხოვნა თქვენთვის სასურველ ჯგუფში გასაწევრიანებლად
+          </p>
+          <Link
+            to="/request"
+            className="inline-block bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium"
+          >
+            მოთხოვნის გაგზავნა
+          </Link>
+        </motion.div>
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          className="bg-gray-800 p-6 rounded-lg"
+        >
+          <h2 className="text-2xl font-bold mb-4">ადმინისტრატორებისთვის</h2>
+          <p className="text-gray-300 mb-4">
+            განიხილეთ და დაამტკიცეთ სტუდენტების მოთხოვნები
+          </p>
+          <Link
+            to="/admin"
+            className="inline-block bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-medium"
+          >
+            მოთხოვნების ნახვა
+          </Link>
+        </motion.div>
+      </div>
     </motion.div>
   )
 }
